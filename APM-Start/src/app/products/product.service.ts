@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
 import { IProduct } from './product';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
@@ -6,13 +6,14 @@ import { catchError, tap } from 'rxjs/operators';
 @Injectable({
     providedIn: 'root'
 })
-export class ProductService{
+export class ProductService {
     productUrl: string = '/api/products/products.json';
-    constructor(private http : HttpClient) {
-        
+    baseUrl: string = "";
+    constructor(private http : HttpClient, @Inject('BASE_URL') baseUrl: string) {
+        this.baseUrl = baseUrl;
     }
     getProducts() : Observable<IProduct[]> {
-        return this.http.get<IProduct[]>(this.productUrl);
+        return this.http.get<IProduct[]>(this.baseUrl + this.productUrl);
     }
     private handleError(err: HttpErrorResponse) {
         let errorMessage = '';
